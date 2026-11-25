@@ -1,0 +1,12 @@
+{
+  "name": "frecuencia-validacion",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "test:ui": "node browser.mjs",
+    "test:api": "node --test api.test.mjs"
+  },
+  "dependencies": {
+    "playwright-core": "1.57.0"
+  }
+}
