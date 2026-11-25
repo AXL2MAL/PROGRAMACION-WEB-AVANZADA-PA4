@@ -12,4 +12,4 @@ app.use(
 );
 app.use(express.static(dir));
 app.get("*", (_, res) => res.sendFile(path.join(dir, "index.html")));
-app.listen(Number(process.env.PORT || 4200), "0.0.0.0");
+app.listen(Number(process.env.PORT || 4200), process.env.BIND_HOST || "0.0.0.0");

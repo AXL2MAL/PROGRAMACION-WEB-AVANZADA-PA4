@@ -62,9 +62,20 @@ Con MongoDB preparado, ejecuta `node --test qa/api.test.mjs` desde la raíz. El 
 
 Con los tres servidores de desarrollo en ejecución y Chromium instalado, ejecuta `node qa/browser.mjs`. La variable opcional `CHROMIUM_PATH` permite especificar el navegador. El recorrido interactúa con ambas interfaces, crea un cliente y un pedido de demostración, comprueba la disminución de stock y archiva el producto de prueba. Estos registros quedan en la base de desarrollo. La grabación adjunta recoge este recorrido en la máquina de desarrollo.
 
-## Preparación para un futuro despliegue HTTPS
+## Despliegue HTTPS en Render
 
-La entrega actual está validada en la nube de desarrollo. Para publicar se necesitan un proyecto de alojamiento para tres servicios web y una base MongoDB con soporte de transacciones, como un replica set de Atlas. Configura el usuario de base con permisos sobre la base de la aplicación, autoriza la salida del backend en Atlas y configura estos comandos desde el directorio de cada servicio:
+El [Blueprint de Render](render.yaml) configura un servicio web en el plan gratuito. La URL que asigna Render abre la tienda en `/` y el panel Angular en `/admin/`. Ambos consumen la API Express bajo `/api`. El servicio incluye los dos frontends y Express, y usa una base MongoDB externa.
+
+1. Crea una base MongoDB Atlas con transacciones, por ejemplo en un clúster gratuito. Crea un usuario con acceso de lectura y escritura a la base de la aplicación y autoriza las direcciones de salida del servicio Render en **Network Access** de Atlas.
+2. En Render, elige **New → Blueprint**, conecta el repositorio de GitHub y selecciona la rama que contiene `render.yaml`.
+3. Ingresa `MONGODB_URI` con el nombre de la base en la URI, `ADMIN_EMAIL` y `ADMIN_PASSWORD` en el formulario privado de Render. Usa una contraseña de al menos 10 caracteres y hasta 72 bytes. Render genera la clave JWT.
+4. Cuando el servicio figure como activo, abre la URL que muestra Render. La API debe responder `{"status":"ok","database":"connected"}` en `/api/health`. Comprueba que el catálogo muestra seis productos iniciales y que el equipo puede acceder a `/admin/`.
+
+El primer arranque prepara el catálogo y la cuenta del equipo. Los reinicios conservan los cambios almacenados en MongoDB. El plan gratuito puede tardar en responder tras un período de inactividad.
+
+## Despliegue HTTPS con servicios separados
+
+Si tu proveedor usa servicios independientes, crea tres servicios web y una base MongoDB con soporte de transacciones, como un replica set de Atlas. Autoriza la salida del backend en Atlas y configura estos comandos desde el directorio de cada servicio:
 
 | Servicio | Compilación | Arranque | Configuración |
 | --- | --- | --- | --- |

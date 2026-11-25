@@ -60,7 +60,9 @@ async function main() {
   );
   app.use(handleError);
   const port = Number(process.env.PORT || 4000);
-  app.listen(port, "0.0.0.0", () => console.log("API en puerto " + port));
+  app.listen(port, process.env.BIND_HOST || "0.0.0.0", () =>
+    console.log("API en puerto " + port),
+  );
 }
 main().catch((err) => {
   console.error("No se pudo iniciar la API:", err.name);
